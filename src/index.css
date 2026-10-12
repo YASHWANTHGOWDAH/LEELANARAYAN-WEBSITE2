@@ -1,0 +1,167 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    background-color: #FDFBF7;
+    color: #2D2A2E;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #FAF6EE;
+}
+::-webkit-scrollbar-thumb {
+  background: #C5A059;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #917228;
+}
+
+/* Indian Classical Pattern Background */
+.bg-mandala {
+  background-image: radial-gradient(#C5A059 0.75px, transparent 0.75px), radial-gradient(#C5A059 0.75px, #FAF6EE 0.75px);
+  background-size: 30px 30px;
+  background-position: 0 0, 15px 15px;
+  opacity: 0.85;
+}
+
+.gold-gradient-text {
+  background: linear-gradient(135deg, #B38F38 0%, #D4AF37 50%, #917228 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.maroon-gradient-bg {
+  background: linear-gradient(135deg, #6B1D2F 0%, #4D1220 70%, #350A14 100%);
+}
+
+.gold-border-glow {
+  box-shadow: 0 0 15px rgba(197, 160, 89, 0.25);
+}
+
+.card-hover-effect {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.card-hover-effect:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 30px -10px rgba(107, 29, 47, 0.12);
+}
+
+/* Keyframes for subtle musical floating note effect */
+@keyframes floatNote {
+  0% {
+    transform: translateY(0px) rotate(0deg);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.6;
+  }
+  80% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(-80px) rotate(15deg);
+    opacity: 0;
+  }
+}
+
+.animate-float-note {
+  animation: floatNote 4s ease-in-out infinite;
+}
+
+/* Subtle Shimmer for Award/Golden highlights */
+@keyframes goldShimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.gold-shimmer {
+  background: linear-gradient(90deg, rgba(212,175,55,0) 0%, rgba(255,235,150,0.4) 50%, rgba(212,175,55,0) 100%);
+  background-size: 200% 100%;
+  animation: goldShimmer 3s infinite;
+}
+
+/* Ambient Moving Musical Symbols Background Animations - Continuous Upward Motion */
+@keyframes musicFloat {
+  0% {
+    transform: translateY(105vh) translateX(0px) rotate(0deg);
+    opacity: 0;
+  }
+  5% {
+    transform: translateY(94vh) translateX(6px) rotate(4deg);
+    opacity: 0.55;
+  }
+  25% {
+    transform: translateY(75vh) translateX(15px) rotate(8deg);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translateY(45vh) translateX(-15px) rotate(-8deg);
+    opacity: 0.65;
+  }
+  75% {
+    transform: translateY(15vh) translateX(12px) rotate(6deg);
+    opacity: 0.6;
+  }
+  95% {
+    transform: translateY(-9vh) translateX(-5px) rotate(-3deg);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateY(-15vh) translateX(0px) rotate(0deg);
+    opacity: 0;
+  }
+}
+
+@keyframes musicFloatAlt {
+  0% {
+    transform: translateY(105vh) translateX(0px) rotate(0deg);
+    opacity: 0;
+  }
+  5% {
+    transform: translateY(94vh) translateX(-6px) rotate(-4deg);
+    opacity: 0.55;
+  }
+  25% {
+    transform: translateY(75vh) translateX(-18px) rotate(-8deg);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translateY(45vh) translateX(18px) rotate(8deg);
+    opacity: 0.65;
+  }
+  75% {
+    transform: translateY(15vh) translateX(-12px) rotate(-6deg);
+    opacity: 0.6;
+  }
+  95% {
+    transform: translateY(-9vh) translateX(5px) rotate(3deg);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateY(-15vh) translateX(0px) rotate(0deg);
+    opacity: 0;
+  }
+}
+
+.animate-music-float {
+  animation-name: musicFloat;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform, opacity;
+}
+
+.animate-music-float-alt {
+  animation-name: musicFloatAlt;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform, opacity;
+}
+
