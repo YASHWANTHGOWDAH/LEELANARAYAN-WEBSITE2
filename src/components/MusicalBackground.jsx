@@ -1,109 +1,83 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
+
+const SYMBOLS = ['♩', '♪', '♫', '♬', '𝄞', '♪', '♫', '♩'];
+
+const COLORS = [
+  'rgba(212,175,55,0.85)',
+  'rgba(184,134,11,0.80)',
+  'rgba(197,160,89,0.85)',
+  'rgba(180,140,60,0.78)',
+  'rgba(204,165,82,0.82)',
+  'rgba(220,190,100,0.85)',
+  'rgba(150,120,80,0.75)',
+  'rgba(212,175,55,0.80)',
+];
+
+const ANIM_CLASSES = ['anim-rise-left', 'anim-rise-right', 'anim-rise-center'];
+
+const PARTICLES = [
+  { left:  6, size: 1.8, delay: 0.0, duration: 3.5, anim: 0 },
+  { left: 18, size: 2.4, delay: 0.4, duration: 4.0, anim: 1 },
+  { left: 32, size: 1.5, delay: 0.7, duration: 3.2, anim: 2 },
+  { left: 47, size: 2.8, delay: 1.0, duration: 4.2, anim: 0 },
+  { left: 60, size: 1.6, delay: 0.5, duration: 3.6, anim: 1 },
+  { left: 74, size: 2.2, delay: 1.2, duration: 3.8, anim: 2 },
+  { left: 85, size: 1.9, delay: 0.2, duration: 3.4, anim: 0 },
+  { left: 93, size: 1.4, delay: 0.8, duration: 3.7, anim: 1 },
+];
+
+const CLEANUP_AFTER_MS = 6200;
+
+let hasPlayedThisLoad = false;
 
 export default function MusicalBackground() {
-  // STRICT ONLY symbols: ♩ ♪ ♫ ♬ ♭ ♮ ♯ 𝄞
-  const allowedSymbols = useMemo(() => [
-    '♩', '♪', '♫', '♬', '♭', '♮', '♯', '𝄞'
-  ], []);
+  const [visible, setVisible] = useState(false);
 
-  // Light, elegant color palette harmonized with the website's warm cream & gold background
-  const lightColorThemes = useMemo(() => [
-    {
-      style: {
-        color: '#C5A059', // Classic Indian gold
-        filter: 'drop-shadow(0 2px 4px rgba(197, 160, 89, 0.28))'
-      }
-    },
-    {
-      style: {
-        color: '#D4AF37', // Pale champagne gold
-        filter: 'drop-shadow(0 2px 4px rgba(212, 175, 55, 0.28))'
-      }
-    },
-    {
-      style: {
-        color: '#B38F38', // Antique warm gold
-        filter: 'drop-shadow(0 2px 4px rgba(179, 143, 56, 0.28))'
-      }
-    },
-    {
-      style: {
-        color: '#C79883', // Soft rose-gold / sandalwood
-        filter: 'drop-shadow(0 2px 4px rgba(199, 152, 131, 0.25))'
-      }
-    },
-    {
-      style: {
-        color: '#DEB887', // Light burlywood / warm cream
-        filter: 'drop-shadow(0 2px 4px rgba(222, 184, 135, 0.28))'
-      }
-    },
-    {
-      style: {
-        color: '#B89758', // Muted bronze gold
-        filter: 'drop-shadow(0 2px 4px rgba(184, 151, 88, 0.28))'
-      }
-    },
-    {
-      style: {
-        color: '#CCA552', // Soft saffron gold
-        filter: 'drop-shadow(0 2px 4px rgba(204, 165, 82, 0.28))'
-      }
-    },
-    {
-      style: {
-        color: '#A88344', // Warm tan gold
-        filter: 'drop-shadow(0 2px 4px rgba(168, 131, 68, 0.25))'
-      }
-    },
-  ], []);
+  useEffect(() => {
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReduced || hasPlayedThisLoad) return;
 
-  // 32 particles for a seamless, continuous stream flowing from bottom to top
-  const notes = useMemo(() => {
-    const totalParticles = 32;
-    return Array.from({ length: totalParticles }, (_, index) => {
-      const symbol = allowedSymbols[index % allowedSymbols.length];
-      const theme = lightColorThemes[index % lightColorThemes.length];
+    hasPlayedThisLoad = true;
+    setVisible(true);
 
-      // Evenly distribute horizontally across the full viewport width
-      const leftPercent = ((index * 3.125 + (index % 3) * 1.5) % 94) + 2.5;
-      
-      // Duration between 14s and 19s for a graceful, steady upward glide
-      const duration = 14 + (index % 6) * 1.0; 
+    const timer = setTimeout(() => setVisible(false), CLEANUP_AFTER_MS);
+    return () => clearTimeout(timer);
+  }, []);
 
-      // Uniformly distributed negative delays so particles fill the full vertical height at all times
-      const delay = (index / totalParticles) * duration;
-      
-      const sizeRem = 1.35 + (index % 5) * 0.35; // 1.35rem to 2.75rem
-      const isAlt = index % 2 === 1;
-
-      return {
-        id: index,
-        symbol,
-        style: {
-          left: `${leftPercent}%`,
-          fontSize: `${sizeRem}rem`,
-          animationDuration: `${duration}s`,
-          animationDelay: `-${delay}s`,
-          ...theme.style,
-        },
-        animationClass: isAlt ? 'animate-music-float-alt' : 'animate-music-float',
-      };
-    });
-  }, [allowedSymbols, lightColorThemes]);
+  if (!visible) return null;
 
   return (
     <div
       aria-hidden="true"
-      className="fixed inset-0 pointer-events-none overflow-hidden z-20 select-none"
+      role="presentation"
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        overflow: 'hidden',
+        pointerEvents: 'none',
+        zIndex: 1,
+        /* isolate layer so browser promotes it to its own compositor layer */
+        contain: 'strict',
+        willChange: 'transform',
+      }}
     >
-      {notes.map((note) => (
+      {PARTICLES.map((p, i) => (
         <span
-          key={note.id}
-          className={`absolute top-0 font-serif font-semibold select-none ${note.animationClass}`}
-          style={note.style}
+          key={i}
+          className={`musical-symbol ${ANIM_CLASSES[p.anim]}`}
+          style={{
+            left: `${p.left}%`,
+            fontSize: `${p.size}rem`,
+            color: COLORS[i % COLORS.length],
+            /* NO filter/box-shadow — those break GPU compositing */
+            animationDuration: `${p.duration}s`,
+            animationDelay: `${p.delay}s`,
+          }}
         >
-          {note.symbol}
+          {SYMBOLS[i]}
         </span>
       ))}
     </div>

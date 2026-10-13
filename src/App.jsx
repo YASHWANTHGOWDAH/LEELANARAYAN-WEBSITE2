@@ -21,6 +21,7 @@ import AdminEditorModal from './components/AdminEditorModal';
 import WhatsAppButton from './components/WhatsAppButton';
 import MusicalBackground from './components/MusicalBackground';
 
+
 import { initialSiteData } from './data/siteData';
 
 export default function App() {
@@ -113,7 +114,7 @@ export default function App() {
     <Router>
       <ScrollToTop />
       <div className="min-h-screen flex flex-col bg-cream-50 text-stone-800 font-sans selection:bg-gold-500 selection:text-white relative">
-        {/* Moving Musical Symbols Ambient Background */}
+        {/* Musical symbols rise once from bottom on page open */}
         <MusicalBackground />
 
         {/* Navigation Header */}

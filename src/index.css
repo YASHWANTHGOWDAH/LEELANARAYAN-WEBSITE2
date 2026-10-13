@@ -88,80 +88,58 @@
   animation: goldShimmer 3s infinite;
 }
 
-/* Ambient Moving Musical Symbols Background Animations - Continuous Upward Motion */
-@keyframes musicFloat {
-  0% {
-    transform: translateY(105vh) translateX(0px) rotate(0deg);
-    opacity: 0;
-  }
-  5% {
-    transform: translateY(94vh) translateX(6px) rotate(4deg);
-    opacity: 0.55;
-  }
-  25% {
-    transform: translateY(75vh) translateX(15px) rotate(8deg);
-    opacity: 0.6;
-  }
-  50% {
-    transform: translateY(45vh) translateX(-15px) rotate(-8deg);
-    opacity: 0.65;
-  }
-  75% {
-    transform: translateY(15vh) translateX(12px) rotate(6deg);
-    opacity: 0.6;
-  }
-  95% {
-    transform: translateY(-9vh) translateX(-5px) rotate(-3deg);
-    opacity: 0.5;
-  }
-  100% {
-    transform: translateY(-15vh) translateX(0px) rotate(0deg);
-    opacity: 0;
-  }
+/* ── Musical Symbol Intro Animation — GPU-optimised ─────────────────────────
+   • translate3d()  →  forces GPU compositor layer (no CPU repaint)
+   • Only 3 keyframe stops per animation  →  minimal interpolation work
+   • No filter / box-shadow  →  avoids triggering software rasterisation
+   • backface-visibility: hidden  →  prevents texture re-upload on transform
+   • Plays ONCE; React removes elements from DOM after animations finish
+──────────────────────────────────────────────────────────────────────────── */
+
+/* Variant A – leftward drift */
+@keyframes riseLeft {
+  0%   { transform: translate3d(   0px, 110vh, 0) rotate(-5deg); opacity: 0;   }
+  15%  {                                                          opacity: 0.9; }
+  100% { transform: translate3d( -20px, -15vh, 0) rotate( 4deg); opacity: 0;   }
 }
 
-@keyframes musicFloatAlt {
-  0% {
-    transform: translateY(105vh) translateX(0px) rotate(0deg);
-    opacity: 0;
-  }
-  5% {
-    transform: translateY(94vh) translateX(-6px) rotate(-4deg);
-    opacity: 0.55;
-  }
-  25% {
-    transform: translateY(75vh) translateX(-18px) rotate(-8deg);
-    opacity: 0.6;
-  }
-  50% {
-    transform: translateY(45vh) translateX(18px) rotate(8deg);
-    opacity: 0.65;
-  }
-  75% {
-    transform: translateY(15vh) translateX(-12px) rotate(-6deg);
-    opacity: 0.6;
-  }
-  95% {
-    transform: translateY(-9vh) translateX(5px) rotate(3deg);
-    opacity: 0.5;
-  }
-  100% {
-    transform: translateY(-15vh) translateX(0px) rotate(0deg);
-    opacity: 0;
-  }
+/* Variant B – rightward drift */
+@keyframes riseRight {
+  0%   { transform: translate3d(  0px, 110vh, 0) rotate( 5deg); opacity: 0;   }
+  15%  {                                                         opacity: 0.9; }
+  100% { transform: translate3d( 20px, -15vh, 0) rotate(-4deg); opacity: 0;   }
 }
 
-.animate-music-float {
-  animation-name: musicFloat;
+/* Variant C – straight rise, slight wobble */
+@keyframes riseCenter {
+  0%   { transform: translate3d(  0px, 110vh, 0) rotate(  0deg); opacity: 0;   }
+  15%  {                                                          opacity: 0.9; }
+  50%  { transform: translate3d( 10px,  48vh, 0) rotate(  6deg);               }
+  100% { transform: translate3d( -5px, -15vh, 0) rotate( -3deg); opacity: 0;   }
+}
+
+/* Shared base */
+.musical-symbol {
+  position: absolute;
+  top: 0;
+  font-family: serif;
+  font-weight: 600;
+  line-height: 1;
+  user-select: none;
+  pointer-events: none;
+  opacity: 0;
+  backface-visibility: hidden;       /* prevent texture re-upload          */
+  -webkit-backface-visibility: hidden;
   animation-timing-function: linear;
-  animation-iteration-count: infinite;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
   will-change: transform, opacity;
 }
 
-.animate-music-float-alt {
-  animation-name: musicFloatAlt;
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
-  will-change: transform, opacity;
-}
+.anim-rise-left   { animation-name: riseLeft;   }
+.anim-rise-right  { animation-name: riseRight;  }
+.anim-rise-center { animation-name: riseCenter; }
 
+@media (prefers-reduced-motion: reduce) {
+  .musical-symbol { display: none; }
+}
